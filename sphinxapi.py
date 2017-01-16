@@ -916,8 +916,8 @@ class SphinxClient:
             opts = {}
 
         assert(isinstance(docs, list))
-        assert(isinstance(index,(str,text_type)))
-        assert(isinstance(words,(str,text_type)))
+        assert(isinstance(index, (str, text_type)))
+        assert(isinstance(words, (str, text_type)))
         assert(isinstance(opts, dict))
 
         sock = self._Connect()
@@ -940,17 +940,17 @@ class SphinxClient:
         # build request
         # v.1.0 req
 
-        flags = 1 #(remove spaces)
-        if opts.get('exact_phrase'):    flags |= 2
-        if opts.get('single_passage'):    flags |= 4
-        if opts.get('use_boundaries'):    flags |= 8
-        if opts.get('weight_order'):    flags |= 16
-        if opts.get('query_mode'):        flags |= 32
-        if opts.get('force_all_words'):    flags |= 64
-        if opts.get('load_files'):        flags |= 128
-        if opts.get('allow_empty'):        flags |= 256
-        if opts.get('emit_zones'):        flags |= 512
-        if opts.get('load_files_scattered'):    flags |= 1024
+        flags = 1
+        if opts.get('exact_phrase'): flags |= 2
+        if opts.get('single_passage'): flags |= 4
+        if opts.get('use_boundaries'): flags |= 8
+        if opts.get('weight_order'): flags |= 16
+        if opts.get('query_mode'): flags |= 32
+        if opts.get('force_all_words'): flags |= 64
+        if opts.get('load_files'): flags |= 128
+        if opts.get('allow_empty'): flags |= 256
+        if opts.get('emit_zones'): flags |= 512
+        if opts.get('load_files_scattered'): flags |= 1024
 
         # mode=0, flags
         req = bytearray()
@@ -1080,16 +1080,16 @@ class SphinxClient:
             req.extend(pack('>L',len(attr)) + attr)
             req.extend(pack('>L', mva_attr))
 
-        req.extend(pack('>L',len(values)))
+        req.extend(pack('>L', len(values)))
         for docid, entry in list(values.items()):
-            req.extend(pack('>Q',docid))
+            req.extend(pack('>Q', docid))
             for val in entry:
                 val_len = val
                 if mva: val_len = len(val)
-                req.extend(pack('>L',val_len))
+                req.extend(pack('>L', val_len))
                 if mva:
                     for vals in val:
-                        req.extend(pack('>L',vals))
+                        req.extend(pack('>L', vals))
 
         # connect, send query, get response
         sock = self._Connect()
@@ -1150,7 +1150,7 @@ class SphinxClient:
         p = 4
         max_ = len(response)
 
-        while nwords>0 and p<max_:
+        while nwords > 0 and p < max_:
             nwords -= 1
 
             length = unpack('>L', response[p:p+4])[0]
@@ -1170,7 +1170,7 @@ class SphinxClient:
 
             res.append(entry)
 
-        if nwords>0 or p>max_:
+        if nwords > 0 or p > max_:
             self._error = 'incomplete reply'
             return None
 
@@ -1252,7 +1252,7 @@ class SphinxClient:
         self._Send(sock, request)
 
         response = self._GetResponse(sock, VER_COMMAND_FLUSHATTRS)
-        if not response or len(response)!=4:
+        if not response or len(response) != 4:
             self._error = 'unexpected response length'
             return -1
 
@@ -1260,28 +1260,28 @@ class SphinxClient:
         return tag
 
 def AssertInt32(value):
-    assert(isinstance(value,(int, long)))
-    assert(value>=-2**32-1 and value<=2**32-1)
+    assert(isinstance(value, (int, long)))
+    assert(value >= -2**32 - 1 and value <= 2**32 - 1)
 
 def AssertUInt32(value):
-    assert(isinstance(value,(int, long)))
-    assert(value>=0 and value<=2**32-1)
+    assert(isinstance(value, (int, long)))
+    assert(value >= 0 and value <= 2**3 2- 1)
 
 def SetBit(flag, bit, on):
     if on:
-        flag +=(1<<bit)
+        flag +=(1 << bit)
     else:
-        reset = 255 ^(1<<bit)
+        reset = 255 ^(1 << bit)
         flag = flag & reset
 
     return flag
 
-if sys.version_info >(3,):
+if sys.version_info > (3, ):
     def str_bytes(x):
         return bytearray(x, 'utf-8')
 else:
     def str_bytes(x):
-        if isinstance(x,unicode):
+        if isinstance(x, unicode):
             return bytearray(x, 'utf-8')
         else:
             return bytearray(x)
